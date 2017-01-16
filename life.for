@@ -13,10 +13,12 @@ c     Assignment 1
 c     Name : Ling Leong
 c     Student ID : 1155062557
 c     Email Addr : alanalan0124@yahoo.com.hk
-      program gol
+      program life
 c       force explicit type declarations
         IMPLICIT NONE
 c       variable declaration
-        
+        CHARACTER*256 arg
+        call getarg(1, arg)
+        write(*,*) arg
         stop
       end
