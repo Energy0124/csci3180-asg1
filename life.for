@@ -14,6 +14,9 @@ c     Name : Ling Leong
 c     Student ID : 1155062557
 c     Email Addr : alanalan0124@yahoo.com.hk
       program gol
-
+c       force explicit type declarations
+        IMPLICIT NONE
+c       variable declaration
+        
         stop
       end
