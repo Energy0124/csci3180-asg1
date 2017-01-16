@@ -47,17 +47,17 @@ c       read all line of pattern
         colc=1
         write(*, *) " reading start", ir
  210    if ( ir.gt.row ) goto 200
-        write(*, *) "start reading line ", ir
-        read(file, "(A)") pat1(ir)
-        if ( ios .neqv. 0 ) stop "error reading pattern"
-        write(*, *) "end reading line ", ir
-        ir=ir+1
+          write(*, *) "start reading line ", ir
+          read(file, "(A)") pat1(ir)
+          if ( ios .neqv. 0 ) stop "error reading pattern"
+          write(*, *) "end reading line ", ir
+          ir=ir+1
         goto 210
  200    ir = 1
  201    if ( ir.gt.row ) goto 220
-        write(*,"(A)") pat1(ir)
-        pat2(ir)=pat1(ir)
-        ir=ir+1
+          write(*,"(A)") pat1(ir)
+          pat2(ir)=pat1(ir)
+          ir=ir+1
         goto 201
  220    write(*, *) "end reading file"
         stop 'quit normally'
