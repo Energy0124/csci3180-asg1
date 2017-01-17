@@ -16,6 +16,23 @@ c     Email Addr : alanalan0124@yahoo.com.hk
 c
 c     Language:
 c     fortran 77
+      logical function issame(s1,s2,row,col)
+        character s1(1:100)*80, s2(1:100)*80
+        integer row, col
+        integer ir, ic
+        ir=1
+        ic=1
+        issame=.true.
+ 300    if ( ir.gt.row ) goto 310
+          write(*, *) "start comparing line ", ir
+          if(s1(ir).ne.s2(ir)) issame=.false.
+          write(*, *) "end comparing line ", ir
+          ic=1
+          ir=ir+1
+        goto 300
+ 310    write(*, *) "done comparing lines"
+        return
+      end
       program life
 c       force explicit type declarations
         implicit none
@@ -24,6 +41,8 @@ c       variable declaration
         integer ir, jr, ic, jc, rowc, colc
         integer file, ios, gen, row, col
         character pat1(1:100)*80, pat2(1:100)*80
+        logical eqsame
+        logical issame
         call getarg(1, arg)
         write(*,*) arg
         file=1
@@ -60,5 +79,9 @@ c       read all line of pattern
           ir=ir+1
         goto 201
  220    write(*, *) "end reading file"
+c       start simulating
+c       compare 2 pattern
+        eqsame = issame(pat1,pat2,row,col)
+        if(eqsame) write(*,*) "2 pattern is same"
         stop 'quit normally'
       end
