@@ -26,8 +26,8 @@ c
           write(*,"(A)") pat1(ir)
           ir=ir+1
         goto 201
- 220    write(*, *) "end printing pattern"
-        return
+c 220    write(*, *) "end printing pattern"
+ 220    return
       end
 c     function
 c     check if two patter are the same
@@ -38,26 +38,26 @@ c     check if two patter are the same
         ir=1
         issame=.true.
  300    if ( ir.gt.row ) goto 310
-          write(*, *) "start comparing line ", ir
+c          write(*, *) "start comparing line ", ir
           if(s1(ir).ne.s2(ir)) issame=.false.
-          write(*, *) "end comparing line ", ir
+c          write(*, *) "end comparing line ", ir
           ir=ir+1
         goto 300
- 310    write(*, *) "done comparing lines"
-        return
+c 310    write(*, *) "done comparing lines"
+ 310    return
       end
       subroutine copypa(pat1,pat2,row,col)
         character pat1(1:100)*80, pat2(1:100)*80
         integer row, col
         integer ir
         ir=1
-        write(*, *) "start copying pattern"
+c        write(*, *) "start copying pattern"
  501    if ( ir.gt.row ) goto 520
           pat2(ir)=pat1(ir)
           ir=ir+1
         goto 501
- 520    write(*, *) "end copying pattern"
-        return
+c 520    write(*, *) "end copying pattern"
+ 520    return
       end
       integer function countc(pat1,pat2,row,col,crow,ccol)
         character pat1(1:100)*80, pat2(1:100)*80
@@ -67,7 +67,7 @@ c     check if two patter are the same
         ic=-1
         countc=0
  600    if ( ir.gt.1 ) goto 610
-          write(*, *) "start counting line ", ir
+c          write(*, *) "start counting line ", ir
  601      if ( ic.gt.1 ) goto 611
             if(crow+ir.lt.1 .or. crow+ir.gt.row)goto 620
             if(ccol+ic.lt.1 .or. ccol+ic.gt.col)goto 620
@@ -75,13 +75,13 @@ c     check if two patter are the same
             if(pat2(crow+ir)(ccol+ic:ccol+ic).eq.'*') countc=countc+1
  620        ic=ic+1
           goto 601
- 611      write(*, *) "end counting line ", ir
-          ic=-1
+c 611      write(*, *) "end counting line ", ir
+  611     ic=-1
           ir=ir+1
         goto 600
- 610    write(*, *) "done counting row ", crow, " col ", ccol,
-     +    " ,count: ", countc
-        return
+c 610    write(*, *) "done counting row ", crow, " col ", ccol,
+c     +    " ,count: ", countc
+ 610    return
       end
 c     subroutine
 c     simulate pattern
@@ -94,25 +94,25 @@ c       copy the pattern to first
         ir=1
         ic=1
  400    if ( ir.gt.row ) goto 410
-          write(*, *) "start simulating line ", ir
+c          write(*, *) "start simulating line ", ir
  401      if ( ic.gt.col ) goto 411
             celsum=0
             celsum=countc(pat1,pat2,row,col,ir,ic)
-            write(*,*) "cell: ", ir, ", ", ic  ,"=",celsum
+c            write(*,*) "cell: ", ir, ", ", ic  ,"=",celsum
             if(celsum.eq.3) pat1(ir)(ic:ic)='*'
             if(celsum.eq.2) goto 420
             goto 421
  421        pat1(ir)(ic:ic)='0'
- 420        write(*,*) "end sim for cell ", ir, ", ", ic
-            ic=ic+1
+c 420        write(*,*) "end sim for cell ", ir, ", ", ic
+ 420        ic=ic+1
           goto 401
- 411      write(*, *) "end simulating line ", ir
-          write(*,"(A)") pat1(ir)
-          ic=1
+c 411      write(*, *) "end simulating line ", ir
+c 411      write(*,"(A)") pat1(ir)
+ 411      ic=1
           ir=ir+1
         goto 400
- 410    write(*, *) "done simulating"
-        return
+c 410    write(*, *) "done simulating"
+ 410    return
       end
       program life
 c       force explicit type declarations
@@ -122,7 +122,7 @@ c       variable declaration
         integer ir, jr, ic, jc, rowc, colc
         integer file, ios, gen, row, col, dgen, cgen
         character pat1(1:100)*80, pat2(1:100)*80
-        logical eqsame,issame
+        logical eqsame,issame, stilll
         call getarg(1, arg)
         write(*,*) arg
         file=1
@@ -147,14 +147,15 @@ c       read all line of pattern
         cgen=1
         write(*, *) " reading start", ir
  210    if ( ir.gt.row ) goto 200
-          write(*, *) "start reading line ", ir
+c          write(*, *) "start reading line ", ir
           read(file, "(A)") pat1(ir)
           if ( ios .neqv. 0 ) stop "error reading pattern"
-          write(*, *) "end reading line ", ir
+c          write(*, *) "end reading line ", ir
           ir=ir+1
         goto 210
  200    ir = 1
         call printp(pat1,row,col)
+        write(*,*) "init pattern"
 c       copy pattern
 c       start simulating
 c       compare 2 pattern
@@ -164,10 +165,15 @@ c        call copypa(pat1,pat2,row,col)
           call printp(pat1,row,col)
           eqsame = issame(pat1,pat2,row,col)
           if(eqsame) write(*,*) "gen ",cgen," is same as before"
+          if(eqsame) dgen=cgen-1
+          if(eqsame) stilll=.true.
+          if(eqsame) goto 700
           if(.not.eqsame) write(*,*) "gen ",cgen," is NOT same"
           cgen=cgen+1
         goto 710
  700    write(*,*) "simulated all ",gen," generations"
+        if(stilll) write(*,*) "Still life after ", dgen, " steps"
+        if(.not.stilll) write(*,*) "Not Still after ", dgen, " steps"
         call printp(pat1,row,col)
         call printp(pat2,row,col)
         stop 'quit normally'
