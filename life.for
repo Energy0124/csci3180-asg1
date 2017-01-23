@@ -17,6 +17,18 @@ c
 c     Language:
 c     fortran 77
 c
+      subroutine printp(pat1,row,col)
+        character pat1(1:100)*80
+        integer row, col
+        integer ir
+        ir=1
+ 201    if ( ir.gt.row ) goto 220
+          write(*,"(A)") pat1(ir)
+          ir=ir+1
+        goto 201
+ 220    write(*, *) "end printing pattern"
+        return
+      end
 c     function
 c     check if two patter are the same
       logical function issame(s1,s2,row,col)
@@ -60,7 +72,7 @@ c     check if two patter are the same
             if(crow+ir.lt.1 .or. crow+ir.gt.row)goto 620
             if(ccol+ic.lt.1 .or. ccol+ic.gt.col)goto 620
             if(ir.eq.0.and.ic.eq.0)goto 620
-            if(pat1(crow+ir)(ccol+ic:ccol+ic).eq.'*') countc=countc+1
+            if(pat2(crow+ir)(ccol+ic:ccol+ic).eq.'*') countc=countc+1
  620        ic=ic+1
           goto 601
  611      write(*, *) "end counting line ", ir
@@ -77,6 +89,8 @@ c     simulate pattern
         character pat1(1:100)*80, pat2(1:100)*80
         integer row, col , countc, celsum
         integer ir, ic, jr, jc
+c       copy the pattern to first
+        call copypa(pat1,pat2,row,col)
         ir=1
         ic=1
  400    if ( ir.gt.row ) goto 410
@@ -84,9 +98,16 @@ c     simulate pattern
  401      if ( ic.gt.col ) goto 411
             celsum=0
             celsum=countc(pat1,pat2,row,col,ir,ic)
+            write(*,*) "cell: ", ir, ", ", ic  ,"=",celsum
+            if(celsum.eq.3) pat1(ir)(ic:ic)='*'
+            if(celsum.eq.2) goto 420
+            goto 421
+ 421        pat1(ir)(ic:ic)='0'
+ 420        write(*,*) "end sim for cell ", ir, ", ", ic
             ic=ic+1
           goto 401
  411      write(*, *) "end simulating line ", ir
+          write(*,"(A)") pat1(ir)
           ic=1
           ir=ir+1
         goto 400
@@ -99,7 +120,7 @@ c       force explicit type declarations
 c       variable declaration
         character arg*80, name*80
         integer ir, jr, ic, jc, rowc, colc
-        integer file, ios, gen, row, col
+        integer file, ios, gen, row, col, dgen
         character pat1(1:100)*80, pat2(1:100)*80
         logical eqsame,issame
         call getarg(1, arg)
@@ -132,18 +153,15 @@ c       read all line of pattern
           ir=ir+1
         goto 210
  200    ir = 1
- 201    if ( ir.gt.row ) goto 220
-          write(*,"(A)") pat1(ir)
-c          pat2(ir)=pat1(ir)
-          ir=ir+1
-        goto 201
- 220    write(*, *) "end reading file"
+        call printp(pat1,pat2,row,col)
 c       copy pattern
-        call copypa(pat1,pat2,row,col)
 c       start simulating
 c       compare 2 pattern
+        call copypa(pat1,pat2,row,col)
+        call sim(pat1,pat2,row,col)
         eqsame = issame(pat1,pat2,row,col)
         if(eqsame) write(*,*) "2 pattern is same"
-        call sim(pat1,pat2,row,col)
+        call printp(pat1,row,col)
+        call printp(pat2,row,col)
         stop 'quit normally'
       end
