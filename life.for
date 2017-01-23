@@ -120,7 +120,7 @@ c       force explicit type declarations
 c       variable declaration
         character arg*80, name*80
         integer ir, jr, ic, jc, rowc, colc
-        integer file, ios, gen, row, col, dgen
+        integer file, ios, gen, row, col, dgen, cgen
         character pat1(1:100)*80, pat2(1:100)*80
         logical eqsame,issame
         call getarg(1, arg)
@@ -144,6 +144,7 @@ c       read all line of pattern
         jc=1
         rowc=1
         colc=1
+        cgen=1
         write(*, *) " reading start", ir
  210    if ( ir.gt.row ) goto 200
           write(*, *) "start reading line ", ir
@@ -153,14 +154,20 @@ c       read all line of pattern
           ir=ir+1
         goto 210
  200    ir = 1
-        call printp(pat1,pat2,row,col)
+        call printp(pat1,row,col)
 c       copy pattern
 c       start simulating
 c       compare 2 pattern
-        call copypa(pat1,pat2,row,col)
-        call sim(pat1,pat2,row,col)
-        eqsame = issame(pat1,pat2,row,col)
-        if(eqsame) write(*,*) "2 pattern is same"
+c        call copypa(pat1,pat2,row,col)
+ 710    if(cgen.gt.gen) goto 700
+          call sim(pat1,pat2,row,col)
+          call printp(pat1,row,col)
+          eqsame = issame(pat1,pat2,row,col)
+          if(eqsame) write(*,*) "gen ",cgen," is same as before"
+          if(.not.eqsame) write(*,*) "gen ",cgen," is NOT same"
+          cgen=cgen+1
+        goto 710
+ 700    write(*,*) "simulated all ",gen," generations"
         call printp(pat1,row,col)
         call printp(pat2,row,col)
         stop 'quit normally'
