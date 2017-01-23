@@ -100,9 +100,9 @@ c          write(*, *) "start simulating line ", ir
             celsum=countc(pat1,pat2,row,col,ir,ic)
 c            write(*,*) "cell: ", ir, ", ", ic  ,"=",celsum
             if(celsum.eq.3) pat1(ir)(ic:ic)='*'
+            if(celsum.eq.3) goto 420
             if(celsum.eq.2) goto 420
-            goto 421
- 421        pat1(ir)(ic:ic)='0'
+            pat1(ir)(ic:ic)='0'
 c 420        write(*,*) "end sim for cell ", ir, ", ", ic
  420        ic=ic+1
           goto 401
@@ -120,7 +120,7 @@ c       force explicit type declarations
 c       variable declaration
         character arg*80, name*80
         integer ir, jr, ic, jc, rowc, colc
-        integer file, ios, gen, row, col, dgen, cgen
+        integer file, ios, gen, row, col, dgen, cgen, fgen
         character pat1(1:100)*80, pat2(1:100)*80
         logical eqsame,issame, stilll
         call getarg(1, arg)
@@ -145,6 +145,7 @@ c       read all line of pattern
         rowc=1
         colc=1
         cgen=1
+        fgen=gen+1
         write(*, *) " reading start", ir
  210    if ( ir.gt.row ) goto 200
 c          write(*, *) "start reading line ", ir
@@ -160,7 +161,7 @@ c       copy pattern
 c       start simulating
 c       compare 2 pattern
 c        call copypa(pat1,pat2,row,col)
- 710    if(cgen.gt.gen) goto 700
+ 710    if(cgen.gt.fgen) goto 700
           call sim(pat1,pat2,row,col)
           call printp(pat1,row,col)
           eqsame = issame(pat1,pat2,row,col)
@@ -171,10 +172,12 @@ c        call copypa(pat1,pat2,row,col)
           if(.not.eqsame) write(*,*) "gen ",cgen," is NOT same"
           cgen=cgen+1
         goto 710
- 700    write(*,*) "simulated all ",gen," generations"
+ 700    write(*,*) "simulated all ",fgen," generations"
         if(stilll) write(*,*) "Still life after ", dgen, " steps"
-        if(.not.stilll) write(*,*) "Not Still after ", dgen, " steps"
+        if(.not.stilll) write(*,*) "Not Still after ", gen, " steps"
         call printp(pat1,row,col)
+        write(*,*) "Final pattern 1 (",fgen," generations)"
         call printp(pat2,row,col)
+        write(*,*) "Final pattern 2 (",gen," generations)"
         stop 'quit normally'
       end
