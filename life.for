@@ -49,7 +49,7 @@ c     check if two patter are the same
       subroutine copypa(pat1,pat2,row,col)
         character pat1(1:100)*80, pat2(1:100)*80
         integer row, col
-        integer ir, ic
+        integer ir
         ir=1
         write(*, *) "start copying pattern"
  501    if ( ir.gt.row ) goto 520
@@ -62,7 +62,7 @@ c     check if two patter are the same
       integer function countc(pat1,pat2,row,col,crow,ccol)
         character pat1(1:100)*80, pat2(1:100)*80
         integer row, col,crow,ccol
-        integer ir, ic, jr, jc
+        integer ir, ic
         ir=-1
         ic=-1
         countc=0
@@ -88,7 +88,7 @@ c     simulate pattern
       subroutine sim(pat1,pat2,row,col)
         character pat1(1:100)*80, pat2(1:100)*80
         integer row, col , countc, celsum
-        integer ir, ic, jr, jc
+        integer ir, ic
 c       copy the pattern to first
         call copypa(pat1,pat2,row,col)
         ir=1
