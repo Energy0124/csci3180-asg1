@@ -17,14 +17,43 @@ c
 c     Language:
 c     fortran 77
 c
-      subroutine printp(pat1,row,col)
-        character pat1(1:100)*80
-        integer row, col
+      integer function trim(str)
+        character str*82
         integer ir
         ir=1
- 201    if ( ir.gt.row ) goto 220
-          write(*,"(A)") pat1(ir)
+ 801    if ( ir.gt.82 ) goto 820
+          if(str(ir:ir).eq.char(13)) str(ir:ir)=str(ir:ir)
+          if(str(ir:ir).eq.char(13)) write(*,*) "r!!"
+          if(str(ir:ir).eq.char(13)) goto 820
+          if(str(ir:ir).eq.char(10)) str(ir:ir)=str(ir:ir)
+          if(str(ir:ir).eq.char(10)) write(*,*) "n!!"
+          if(str(ir:ir).eq.char(10)) goto 820
+          write(*,*) ichar(str(ir:ir))
+          write(*,'(A)') str(ir:ir)
           ir=ir+1
+        goto 801
+ 820    str(ir:ir)=char(32)
+        ir=ir-1
+        write(*,'(A)') CHAR(10)
+        write(*,'(A)') str
+        write(*,*) ir , " char in str"
+        trim=ir
+        return
+      end  
+      subroutine printp(pat1,row,col)
+        character pat1(1:100)*82
+        integer row, col
+        integer ir, ic
+        ir=1
+        ic=1
+ 201    if ( ir.gt.row ) goto 220
+ 231      if ( ic.gt.col ) goto 211
+            write(*,'(A,$)') pat1(ir)(ic:ic)
+            ic=ic+1
+          goto 231
+ 211      ic=1
+          ir=ir+1
+          write(*,'(A)') CHAR(10)
         goto 201
 c 220    write(*, *) "end printing pattern"
  220    return
@@ -32,7 +61,7 @@ c 220    write(*, *) "end printing pattern"
 c     function
 c     check if two patter are the same
       logical function issame(s1,s2,row,col)
-        character s1(1:100)*80, s2(1:100)*80
+        character s1(1:100)*82, s2(1:100)*82
         integer row, col
         integer ir
         ir=1
@@ -47,7 +76,7 @@ c 310    write(*, *) "done comparing lines"
  310    return
       end
       subroutine copypa(pat1,pat2,row,col)
-        character pat1(1:100)*80, pat2(1:100)*80
+        character pat1(1:100)*82, pat2(1:100)*82
         integer row, col
         integer ir
         ir=1
@@ -60,7 +89,7 @@ c 520    write(*, *) "end copying pattern"
  520    return
       end
       integer function countc(pat1,pat2,row,col,crow,ccol)
-        character pat1(1:100)*80, pat2(1:100)*80
+        character pat1(1:100)*82, pat2(1:100)*82
         integer row, col,crow,ccol
         integer ir, ic
         ir=-1
@@ -86,7 +115,7 @@ c     +    " ,count: ", countc
 c     subroutine
 c     simulate pattern
       subroutine sim(pat1,pat2,row,col)
-        character pat1(1:100)*80, pat2(1:100)*80
+        character pat1(1:100)*82, pat2(1:100)*82
         integer row, col , countc, celsum
         integer ir, ic
 c       copy the pattern to first
@@ -118,22 +147,25 @@ c 410    write(*, *) "done simulating"
 c       force explicit type declarations
         implicit none
 c       variable declaration
-        character arg*80, name*80
-        integer ir, jr, ic, jc, rowc, colc
-        integer file, ios, gen, row, col, dgen, cgen, fgen
-        character pat1(1:100)*80, pat2(1:100)*80
+        character arg*82, name*82
+        integer ir, jr, ic, jc, rowc, colc, arrayl ,trim ,namlen
+        integer file, outf, ios, gen, row, col, dgen, cgen, fgen
+        character pat1(1:100)*82, pat2(1:100)*82
         logical eqsame,issame, stilll
+        parameter (arrayl=82)
         call getarg(1, arg)
         write(*,*) arg
         file=1
         open(unit=file, iostat= ios, file=arg, status='old')
-        if ( ios .neqv. 0 ) stop 'error opening file '
+        if ( ios .neqv. 0 ) stop 'error opening input file '
         read(file, "(A)", iostat= ios) name
         if ( ios .neqv. 0 ) stop 'error reading name '
         read(file, *, iostat= ios) gen
         if ( ios .neqv. 0 ) stop 'error reading gen '
         read(file, *, iostat= ios) row, col
         if ( ios .neqv. 0 ) stop 'error reading row and col '
+        namlen=trim(name)
+        write(*,*) namlen , " chars in name"
         write(*,"(A)") name
         write(*,*) gen
         write(*,*) row, col
@@ -179,5 +211,10 @@ c        call copypa(pat1,pat2,row,col)
         write(*,*) "Final pattern 1 (",fgen," generations)"
         call printp(pat2,row,col)
         write(*,*) "Final pattern 2 (",gen," generations)"
+        open(unit=outf, iostat= ios, 
+     +   file=name(1:namlen)//'for.txt', status='new')
+        if ( ios .neqv. 0 ) stop 'error opening output file '
+        write (*,*) "opened output file"
+        write (outf,*) "test"
         stop 'quit normally'
       end
