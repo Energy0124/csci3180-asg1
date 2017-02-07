@@ -39,7 +39,7 @@ c
         write(*,*) ir , " char in str"
         trim=ir
         return
-      end  
+      end
       subroutine printp(pat1,row,col)
         character pat1(1:100)*82
         integer row, col
@@ -148,7 +148,7 @@ c       force explicit type declarations
         implicit none
 c       variable declaration
         character arg*82, name*82
-        integer ir, jr, ic, jc, rowc, colc, arrayl ,trim ,namlen
+        integer ir, jr, ic, jc, rowc, colc, arrayl ,trim ,namlen ,tmplen
         integer file, outf, ios, gen, row, col, dgen, cgen, fgen
         character pat1(1:100)*82, pat2(1:100)*82
         logical eqsame,issame, stilll
@@ -211,10 +211,38 @@ c        call copypa(pat1,pat2,row,col)
         write(*,*) "Final pattern 1 (",fgen," generations)"
         call printp(pat2,row,col)
         write(*,*) "Final pattern 2 (",gen," generations)"
-        open(unit=outf, iostat= ios, 
-     +   file=name(1:namlen)//'for.txt', status='new')
+        open(unit=outf, iostat= ios,
+     +   file=name(1:namlen)//'for.txt', status='UNKNOWN')
         if ( ios .neqv. 0 ) stop 'error opening output file '
         write (*,*) "opened output file"
-        write (outf,*) "test"
-        stop 'quit normally'
+        jr=1
+ 900    if ( jr.gt.row ) goto 910
+          write(*, *) "writing file ", jr
+          write(outf,"(A)") pat2(jr)(1:col)//char(13)
+c          write(*, *) "end comparing line ", ir
+          jr=jr+1
+        goto 900
+c 310    write(*, *) "done comparing lines"
+ 910    write(*, *) "done write file"
+        if(dgen.eq.0) tmplen=1
+        if(dgen.eq.0.and.stilll) write(outf,"(A)")
+     +    "It is a still life initially."//char(13)
+        if(dgen.eq.0.and.stilll) stop
+        if(dgen.ne.0) tmplen=log10(real(dgen))+1
+        if(stilll.and.dgen.eq.1) write(outf,"(A,I<tmplen>,A)")
+     +    "It is a still life after ",
+     +    dgen ," step."//char(13)
+        if(stilll) write(outf,"(A,I<tmplen>,A)")
+     +    "It is a still life after ",
+     +    dgen ," steps."//char(13)
+        if(stilll) stop
+        if(gen.eq.0) tmplen=1
+        if(gen.ne.0) tmplen=log10(real(gen))+1
+        if(.not.stilll.and.gen.eq.1) write(outf,"(A,I<tmplen>,A)")
+     +    "It is still not a still life even after ",
+     +    gen ," step."//char(13)
+        if(.not.stilll) write(outf,"(A,I<tmplen>,A)")
+     +    "It is still not a still life even after ",
+     +    gen ," steps."//char(13)
+        stop
       end
