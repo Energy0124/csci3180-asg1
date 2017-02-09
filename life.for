@@ -22,12 +22,9 @@ c
         integer ir
         ir=1
  801    if ( ir.gt.82 ) goto 820
-          if(str(ir:ir).eq.char(13)) str(ir:ir)=str(ir:ir)
-          if(str(ir:ir).eq.char(13)) write(*,*) "r!!"
+c          if(str(ir:ir).eq.char(13)) str(ir:ir)=str(ir:ir)
+c          if(str(ir:ir).eq.char(13)) write(*,*) "r!!"
           if(str(ir:ir).eq.char(13)) goto 820
-          if(str(ir:ir).eq.char(10)) str(ir:ir)=str(ir:ir)
-          if(str(ir:ir).eq.char(10)) write(*,*) "n!!"
-          if(str(ir:ir).eq.char(10)) goto 820
           write(*,*) ichar(str(ir:ir))
           write(*,'(A)') str(ir:ir)
           ir=ir+1
@@ -214,17 +211,17 @@ c        call copypa(pat1,pat2,row,col)
         open(unit=outf, iostat= ios,
      +   file=name(1:namlen)//'for.txt', status='UNKNOWN')
         if ( ios .neqv. 0 ) stop 'error opening output file '
-        write (*,*) "opened output file"
+c        write (*,*) "opened output file"
         jr=1
  900    if ( jr.gt.row ) goto 910
-          write(*, *) "writing file ", jr
+c          write(*, *) "writing file ", jr
           write(outf,"(A)") pat2(jr)(1:col)//char(13)
 c          write(*, *) "end comparing line ", ir
           jr=jr+1
         goto 900
 c 310    write(*, *) "done comparing lines"
- 910    write(*, *) "done write file"
-        if(dgen.eq.0) tmplen=1
+c 910    write(*, *) "done write file"
+ 910    if(dgen.eq.0) tmplen=1
         if(dgen.eq.0.and.stilll) write(outf,"(A)")
      +    "It is a still life initially."//char(13)
         if(dgen.eq.0.and.stilll) stop
