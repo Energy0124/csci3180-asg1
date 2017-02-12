@@ -129,41 +129,41 @@
       *>      DISPLAY STILL-LIFE-GENERATION-TRIMED
 
            IF(IS-STILL-LIFE=1 AND STILL-LIFE-GENERATION=0) THEN
-               STRING "It is a still life initially." DELIMITED BY SIZE
+               STRING 'It is a still life initially.' DELIMITED BY SIZE
                    INTO STATUS-STRING
                    WITH POINTER STATUS-LENGTH
                END-STRING
            END-IF
            IF(IS-STILL-LIFE=1 AND STILL-LIFE-GENERATION =1) THEN
-               STRING "It is a still life after " DELIMITED BY SIZE
+               STRING 'It is a still life after ' DELIMITED BY SIZE
                    STILL-LIFE-GENERATION-TRIMED DELIMITED BY SPACE
-                   " step." DELIMITED BY SIZE
+                   ' step.' DELIMITED BY SIZE
                    INTO STATUS-STRING
                    WITH POINTER STATUS-LENGTH
                END-STRING
            END-IF
            IF(IS-STILL-LIFE=1 AND STILL-LIFE-GENERATION >1) THEN
-               STRING "It is a still life after " DELIMITED BY SIZE
+               STRING 'It is a still life after ' DELIMITED BY SIZE
                    STILL-LIFE-GENERATION-TRIMED DELIMITED BY SPACE
-                   " steps." DELIMITED BY SIZE
+                   ' steps.' DELIMITED BY SIZE
                    INTO STATUS-STRING
                    WITH POINTER STATUS-LENGTH
                END-STRING
            END-IF
            IF(IS-STILL-LIFE=0 AND GENERATION-NUMBER <=1) THEN
-               STRING "It is still not a still life even after "
+               STRING 'It is still not a still life even after '
                    DELIMITED BY SIZE
                    GENERATION-NUMBER-TRIMED DELIMITED BY SPACE
-                   " step." DELIMITED BY SIZE
+                   ' step.' DELIMITED BY SIZE
                    INTO STATUS-STRING
                    WITH POINTER STATUS-LENGTH
                END-STRING
            END-IF
            IF(IS-STILL-LIFE=0 AND GENERATION-NUMBER >1) THEN
-               STRING "It is still not a still life even after "
+               STRING 'It is still not a still life even after '
                    DELIMITED BY SIZE
                    GENERATION-NUMBER-TRIMED DELIMITED BY SPACE
-                   " steps." DELIMITED BY SIZE
+                   ' steps.' DELIMITED BY SIZE
                    INTO STATUS-STRING
                    WITH POINTER STATUS-LENGTH
                END-STRING
@@ -171,6 +171,7 @@
 
 
            MOVE STATUS-LENGTH TO STATUS-SIZE
+           SUBTRACT 1 FROM STATUS-SIZE
       *>      DISPLAY STATUS-LENGTH
       *>      DISPLAY STATUS-SIZE
            MOVE STATUS-STRING TO OUTPUT-STATUS-LINE
