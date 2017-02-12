@@ -145,11 +145,15 @@ c       force explicit type declarations
         implicit none
 c       variable declaration
         character arg*82, name*82
-        integer ir, jr, ic, jc, rowc, colc, arrayl ,trim ,namlen ,tmplen
+        integer ir, jr, ic, jc, rowc, colc, arrayl, trim, namlen, tmplen
         integer file, outf, ios, gen, row, col, dgen, cgen, fgen
+        integer iargc, argcou
         character pat1(1:100)*82, pat2(1:100)*82
         logical eqsame,issame, stilll
         parameter (arrayl=82)
+        argcou=IARGC()
+C         write(*,*) argcou
+        if(argcou.lt.1) stop "Not enough argument"
         call getarg(1, arg)
 C         write(*,*) arg
         file=1
