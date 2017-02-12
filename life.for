@@ -25,15 +25,15 @@ c
 c          if(str(ir:ir).eq.char(13)) str(ir:ir)=str(ir:ir)
 c          if(str(ir:ir).eq.char(13)) write(*,*) "r!!"
           if(str(ir:ir).eq.char(13)) goto 820
-          write(*,*) ichar(str(ir:ir))
-          write(*,'(A)') str(ir:ir)
+C           write(*,*) ichar(str(ir:ir))
+C           write(*,'(A)') str(ir:ir)
           ir=ir+1
         goto 801
  820    str(ir:ir)=char(32)
         ir=ir-1
-        write(*,'(A)') CHAR(10)
-        write(*,'(A)') str
-        write(*,*) ir , " char in str"
+C         write(*,'(A)') CHAR(10)
+C         write(*,'(A)') str
+C         write(*,*) ir , " char in str"
         trim=ir
         return
       end
@@ -151,7 +151,7 @@ c       variable declaration
         logical eqsame,issame, stilll
         parameter (arrayl=82)
         call getarg(1, arg)
-        write(*,*) arg
+C         write(*,*) arg
         file=1
         open(unit=file, iostat= ios, file=arg, status='old')
         if ( ios .neqv. 0 ) stop 'error opening input file '
@@ -162,10 +162,10 @@ c       variable declaration
         read(file, *, iostat= ios) row, col
         if ( ios .neqv. 0 ) stop 'error reading row and col '
         namlen=trim(name)
-        write(*,*) namlen , " chars in name"
-        write(*,"(A)") name
-        write(*,*) gen
-        write(*,*) row, col
+C         write(*,*) namlen , " chars in name"
+C         write(*,"(A)") name
+C         write(*,*) gen
+C         write(*,*) row, col
 c       read all line of pattern
         ir=1
         jr=1
@@ -175,7 +175,7 @@ c       read all line of pattern
         colc=1
         cgen=1
         fgen=gen+1
-        write(*, *) " reading start", ir
+C         write(*, *) " reading start", ir
  210    if ( ir.gt.row ) goto 200
 c          write(*, *) "start reading line ", ir
           read(file, "(A)") pat1(ir)
@@ -184,31 +184,31 @@ c          write(*, *) "end reading line ", ir
           ir=ir+1
         goto 210
  200    ir = 1
-        call printp(pat1,row,col)
-        write(*,*) "init pattern"
+C         call printp(pat1,row,col)
+C         write(*,*) "init pattern"
 c       copy pattern
 c       start simulating
 c       compare 2 pattern
 c        call copypa(pat1,pat2,row,col)
  710    if(cgen.gt.fgen) goto 700
           call sim(pat1,pat2,row,col)
-          call printp(pat1,row,col)
+C           call printp(pat1,row,col)
           eqsame = issame(pat1,pat2,row,col)
-          if(eqsame) write(*,*) "gen ",cgen," is same as before"
+C           if(eqsame) write(*,*) "gen ",cgen," is same as before"
           if(eqsame) dgen=cgen-1
           if(eqsame) stilll=.true.
           if(eqsame) goto 700
-          if(.not.eqsame) write(*,*) "gen ",cgen," is NOT same"
+C           if(.not.eqsame) write(*,*) "gen ",cgen," is NOT same"
           cgen=cgen+1
         goto 710
- 700    write(*,*) "simulated all ",fgen," generations"
-        if(stilll) write(*,*) "Still life after ", dgen, " steps"
-        if(.not.stilll) write(*,*) "Not Still after ", gen, " steps"
-        call printp(pat1,row,col)
-        write(*,*) "Final pattern 1 (",fgen," generations)"
-        call printp(pat2,row,col)
-        write(*,*) "Final pattern 2 (",gen," generations)"
-        open(unit=outf, iostat= ios,
+C  700    write(*,*) "simulated all ",fgen," generations"
+C         if(stilll) write(*,*) "Still life after ", dgen, " steps"
+C         if(.not.stilll) write(*,*) "Not Still after ", gen, " steps"
+C         call printp(pat1,row,col)
+C         write(*,*) "Final pattern 1 (",fgen," generations)"
+C         call printp(pat2,row,col)
+C         write(*,*) "Final pattern 2 (",gen," generations)"
+ 700    open(unit=outf, iostat= ios,
      +   file=name(1:namlen)//'for.txt', status='UNKNOWN')
         if ( ios .neqv. 0 ) stop 'error opening output file '
 c        write (*,*) "opened output file"
