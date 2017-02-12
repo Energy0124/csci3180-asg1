@@ -18,6 +18,8 @@
        PROGRAM-ID.   LIFE.
       *
       *The game of life
+      *As this program is already quite cleanly written with those long VARIABLE name
+      *There isn't much comments. The code should read itself.
 
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
